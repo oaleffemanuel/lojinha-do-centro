@@ -9,7 +9,7 @@ describe("catálogo estático", () => {
     expect(books).toHaveLength(1118);
     expect(new Set(books.map((book) => book.isbn)).size).toBe(1118);
     expect(books.every((book) => Number.isInteger(book.price_cents) && book.price_cents > 0)).toBe(true);
-    expect(books.filter((book) => coverForIsbn(book.isbn))).toHaveLength(220);
+    expect(books.filter((book) => coverForIsbn(book.isbn))).toHaveLength(777);
   });
   it("busca ISBN formatado, autor e título sem acentos", () => {
     expect(searchBooks({ q: "978-85-5638-489-8" }).total).toBe(1);
