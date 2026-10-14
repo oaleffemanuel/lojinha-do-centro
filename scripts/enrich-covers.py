@@ -142,12 +142,20 @@ def main():
 
     def save():
         manifest['updated_at'] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        by_publisher = {}
+        for book in books:
+            publisher = book.get('publisher', 'Sem editora')
+            by_publisher.setdefault(publisher, {'total': 0, 'covers': 0})
+            by_publisher[publisher]['total'] += 1
+            if normalize_isbn(book['isbn']) in manifest['covers']:
+                by_publisher[publisher]['covers'] += 1
         manifest['report'] = {
             'total_books': len(books),
             'covers_found': sum(normalize_isbn(book['isbn']) in manifest['covers'] for book in books),
             'covers_missing': sum(normalize_isbn(book['isbn']) not in manifest['covers'] for book in books),
             'uncertain_matches_rejected': sum(page['status'] == 'rejected' for page in manifest['pages'].values()),
             'source': 'Cultor de Livros official product pages / Nuvemshop CDN',
+            'by_publisher': by_publisher,
         }
         temporary = output.with_suffix('.tmp')
         temporary.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n')

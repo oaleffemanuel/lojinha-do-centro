@@ -2149,6 +2149,56 @@
       "checked_at": "2026-10-14T16:28:35.193471+00:00",
       "match_method": "exact validated ISBN from product page",
       "storage": "external publisher CDN URL; no image downloaded"
+    },
+    "9788556383129": {
+      "url": "https://acdn-us.mitiendanube.com/stores/002/308/407/products/capa-formar-na-liberdade-e-para-a-liberdade1-ff3145c38408cce6c416812348725195-640-0.webp",
+      "source_url": "https://cultordelivros.com.br/produtos/formar-na-liberdade-e-para-a-liberdade/",
+      "source": "Cultor de Livros",
+      "matched_isbn": "9788556383129",
+      "source_title": "Formar na liberdade e para a liberdade",
+      "checked_at": "2026-10-14T19:08:55.383675+00:00",
+      "match_method": "exact validated ISBN from product page",
+      "storage": "external publisher CDN URL; no image downloaded"
+    },
+    "9788556383686": {
+      "url": "https://acdn-us.mitiendanube.com/stores/002/308/407/products/81404dd3f974d82522169ef952b58781-e236aec021a897267917044589799658-640-0.webp",
+      "source_url": "https://cultordelivros.com.br/produtos/enunciados-sobre-a-oracao/",
+      "source": "Cultor de Livros",
+      "matched_isbn": "9788556383686",
+      "source_title": "Enunciados sobre a Oração",
+      "checked_at": "2026-10-14T19:08:59.628259+00:00",
+      "match_method": "exact validated ISBN from product page",
+      "storage": "external publisher CDN URL; no image downloaded"
+    },
+    "9788556384782": {
+      "url": "https://acdn-us.mitiendanube.com/stores/002/308/407/products/4be4032c0a5ebbdbce8cb2e63921d323-4f448725fa276db45b17485377976459-640-0.webp",
+      "source_url": "https://cultordelivros.com.br/produtos/deus-cristo-a-igreja-perguntas-e-respostas/",
+      "source": "Cultor de Livros",
+      "matched_isbn": "9788556384782",
+      "source_title": "Deus, Cristo, a Igreja - Perguntas e respostas",
+      "checked_at": "2026-10-14T19:09:03.613090+00:00",
+      "match_method": "exact validated ISBN from product page",
+      "storage": "external publisher CDN URL; no image downloaded"
+    },
+    "9788556380241": {
+      "url": "https://acdn-us.mitiendanube.com/stores/002/308/407/products/11-0b6cf9d6c63436050c16724091921537-640-0.webp",
+      "source_url": "https://cultordelivros.com.br/produtos/pequeno-catecismo-da-vida-de-oracao/",
+      "source": "Cultor de Livros",
+      "matched_isbn": "9788556380241",
+      "source_title": "Pequeno catecismo da vida de oração",
+      "checked_at": "2026-10-14T19:09:07.280136+00:00",
+      "match_method": "exact validated ISBN from product page",
+      "storage": "external publisher CDN URL; no image downloaded"
+    },
+    "9788556382429": {
+      "url": "https://acdn-us.mitiendanube.com/stores/002/308/407/products/o-espirito-santo-alma-do-corpo-mistico-mar-atlantico-capa-frente-9992fdb28d9644a5de17576152154851-640-0.webp",
+      "source_url": "https://cultordelivros.com.br/produtos/espirito-santo-o-alma-do-corpo-mistico/",
+      "source": "Cultor de Livros",
+      "matched_isbn": "9788556382429",
+      "source_title": "Espirito Santo, O - \"Alma\" do Corpo Mistico",
+      "checked_at": "2026-10-14T19:09:11.609874+00:00",
+      "match_method": "exact validated ISBN from product page",
+      "storage": "external publisher CDN URL; no image downloaded"
     }
   },
   "pages": {
@@ -3047,33 +3097,48 @@
     "https://cultordelivros.com.br/produtos/construcao-da-amizade-a-um-guia-pratico/": {
       "status": "matched",
       "reason": "9786586580617"
+    },
+    "https://cultordelivros.com.br/produtos/formar-na-liberdade-e-para-a-liberdade/": {
+      "status": "matched",
+      "reason": "9788556383129"
+    },
+    "https://cultordelivros.com.br/produtos/enunciados-sobre-a-oracao/": {
+      "status": "matched",
+      "reason": "9788556383686"
+    },
+    "https://cultordelivros.com.br/produtos/deus-cristo-a-igreja-perguntas-e-respostas/": {
+      "status": "matched",
+      "reason": "9788556384782"
+    },
+    "https://cultordelivros.com.br/produtos/pequeno-catecismo-da-vida-de-oracao/": {
+      "status": "matched",
+      "reason": "9788556380241"
+    },
+    "https://cultordelivros.com.br/produtos/espirito-santo-o-alma-do-corpo-mistico/": {
+      "status": "matched",
+      "reason": "9788556382429"
     }
   },
-  "updated_at": "2026-10-14T16:31:57.527396+00:00",
+  "updated_at": "2026-10-14T19:09:11.623213+00:00",
   "report": {
     "total_books": 1118,
-    "covers_found": 215,
-    "covers_missing": 903,
+    "covers_found": 220,
+    "covers_missing": 898,
     "uncertain_matches_rejected": 9,
-    "source": "Cultor official pages plus exact-ISBN bibliographic sources",
+    "source": "Cultor de Livros official product pages / Nuvemshop CDN",
     "by_publisher": {
       "Cultor de Livros": {
         "total": 558,
-        "covers": 215
+        "covers": 220
       },
       "Quadrante Editora": {
         "total": 560,
         "covers": 0
       }
-    },
-    "last_isbn_pass": {
-      "publisher": "Quadrante Editora",
-      "checked": 30,
-      "matched": 0
     }
   },
   "robots_url": "https://cultordelivros.com.br/robots.txt",
-  "robots_checked_at": "2026-10-14T16:24:27.207176+00:00",
+  "robots_checked_at": "2026-10-14T19:08:46.263634+00:00",
   "failures": {
     "isbn:9788574652887": {
       "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>",

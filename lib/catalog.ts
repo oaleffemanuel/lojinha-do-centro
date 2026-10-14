@@ -23,12 +23,29 @@ export interface CatalogQuery {
 }
 
 export const PAGE_SIZE = 24;
+export const FEATURED_ISBNS = [
+  "9788556384898",
+  "9788556385543",
+  "9788562219801",
+  "9788556381811",
+  "9786586580082",
+  "9788556381477",
+] as const;
+
 export const books: Book[] = catalog.map((book) => ({
   ...book,
   id: Number(book.isbn),
   description: null,
   availability: (stockedIsbns as string[]).includes(book.isbn) ? "stock" : "order",
 }));
+
+export function featuredBooks() {
+  const byIsbn = new Map(books.map((book) => [book.isbn, book]));
+  return FEATURED_ISBNS.flatMap((isbn) => {
+    const book = byIsbn.get(isbn);
+    return book ? [book] : [];
+  });
+}
 
 function normalize(value: string) {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("pt-BR");

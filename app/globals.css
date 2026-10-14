@@ -73,7 +73,7 @@
   .book-card-body { display: flex; flex: 1; flex-direction: column; gap: .55rem; padding: 1rem; }
   .book-card-title { min-height: 3.8rem; font-family: var(--font-serif); font-size: 1.02rem; line-height: 1.22; }
   .book-card-title:hover { text-decoration: underline; text-underline-offset: .16em; }
-  .book-card-author { min-height: 1.3rem; overflow: hidden; color: var(--color-graphite); font-size: .78rem; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
+  .book-card-author { display: -webkit-box; min-height: 2.1rem; overflow: hidden; color: var(--color-graphite); font-size: .78rem; line-height: 1.35; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
   .book-card-meta { display: flex; min-height: 2.2rem; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .45rem; }
   .book-card-meta > p { font-size: 1.1rem; font-weight: 600; }
   .book-card-action { margin-top: auto; padding-top: .4rem; }

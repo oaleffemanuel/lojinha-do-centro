@@ -16,7 +16,8 @@ export function orderMessage(input: {
   notes?: string | null;
 }): string {
   const lines = [
-    `Olá! Gostaria de fazer uma encomenda na ${STORE_NAME}!`,
+    `Olá! Gostaria de fazer uma encomenda`,
+    `na ${STORE_NAME}!`,
     "",
     "*Meu pedido:*",
     ...input.items.map((item, index) => item.quantity === 1
@@ -25,9 +26,9 @@ export function orderMessage(input: {
     "",
     `*Total: ${formatBRL(input.totalCents)}*`,
   ];
-  if (input.customerName.trim()) lines.push("", `Nome: ${input.customerName.trim()}`);
+  if (input.customerName.trim()) lines.push("", `*Nome:* ${input.customerName.trim()}`);
   if (input.notes?.trim()) {
-    lines.push("", `Observação: ${input.notes.trim()}`);
+    lines.push("", `*Observação:* ${input.notes.trim()}`);
   }
   lines.push("", "Gostaria de confirmar a disponibilidade e receber os dados para pagamento por PIX.", "Obrigado!");
   return lines.join("\n");

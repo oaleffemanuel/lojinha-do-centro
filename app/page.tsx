@@ -3,27 +3,21 @@ import Link from "next/link";
 import { Availability } from "@/components/availability";
 import { BookCard } from "@/components/book-card";
 import { BookCover } from "@/components/book-cover";
-import { facets, searchBooks } from "@/lib/catalog";
-import { STORE_NAME, STORE_PLACE } from "@/lib/config";
+import { books, facets, featuredBooks } from "@/lib/catalog";
+import { STORE_NAME } from "@/lib/config";
 import { coverForIsbn } from "@/lib/covers";
 
 export default async function Home() {
-  const [{ books }, { stockCount, categories }] = await Promise.all([
-    searchBooks({ page: 1 }),
-    facets(),
-  ]);
-  const shelf = books.filter((book) => coverForIsbn(book.isbn)).slice(0, 3);
-  const featured = [...books]
-    .sort((first, second) => Number(Boolean(coverForIsbn(second.isbn))) - Number(Boolean(coverForIsbn(first.isbn))))
-    .slice(0, 6);
+  const [{ stockCount, categories }, featured] = await Promise.all([facets(), featuredBooks()]);
+  const shelf = featured.slice(0, 3);
 
   return (
     <div className="store-shell">
       <section className="hero-panel">
         <div className="hero-copy">
           <p className="eyebrow">LIVROS NO CENTRO CULTURAL ITACOLOMY</p>
-          <h1>Livros para levar a conversa para casa.</h1>
-          <p className="hero-lede">Uma pequena livraria de espiritualidade, literatura, filosofia e formação — escolhida com calma, dentro do {STORE_PLACE}.</p>
+          <h1>Livros para ler, estudar e presentear.</h1>
+          <p className="hero-lede">Conheça nosso catálogo de espiritualidade, filosofia, literatura e formação. Escolha seus livros e faça sua encomenda pelo WhatsApp.</p>
           <div className="hero-actions">
             <Link href="/livros" className="primary-action">Explorar o catálogo</Link>
             {stockCount > 0 ? <Link href="/livros?availability=stock" className="secondary-action">Ver o que está no Centro</Link> : null}
@@ -36,7 +30,7 @@ export default async function Home() {
       </section>
 
       <section className="store-section discovery-section">
-        <div className="section-heading"><div><p className="eyebrow">PARA COMEÇAR</p><h2>Uma estante para descobrir</h2></div><Link href="/livros" className="text-link">Ver todos os livros →</Link></div>
+        <div className="section-heading"><div><p className="eyebrow">PARA COMEÇAR</p><h2>Nossa seleção</h2></div><Link href="/livros" className="text-link">Ver todos os livros →</Link></div>
         <div className="book-grid book-grid-home">{featured.map((book) => <BookCard key={book.id} book={book} coverUrl={coverForIsbn(book.isbn)?.url} />)}</div>
       </section>
 

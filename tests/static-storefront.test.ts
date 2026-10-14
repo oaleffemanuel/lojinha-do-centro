@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { books, facets, searchBooks } from "@/lib/catalog";
+import { books, FEATURED_ISBNS, facets, featuredBooks, searchBooks } from "@/lib/catalog";
 import { CART_KEY, normalizeLines, parseRecovery, resolveCart } from "@/lib/cart";
 import { orderMessage, whatsappUrl } from "@/lib/whatsapp";
 import { coverForIsbn } from "@/lib/covers";
@@ -9,7 +9,7 @@ describe("catálogo estático", () => {
     expect(books).toHaveLength(1118);
     expect(new Set(books.map((book) => book.isbn)).size).toBe(1118);
     expect(books.every((book) => Number.isInteger(book.price_cents) && book.price_cents > 0)).toBe(true);
-    expect(books.filter((book) => coverForIsbn(book.isbn))).toHaveLength(215);
+    expect(books.filter((book) => coverForIsbn(book.isbn))).toHaveLength(220);
   });
   it("busca ISBN formatado, autor e título sem acentos", () => {
     expect(searchBooks({ q: "978-85-5638-489-8" }).total).toBe(1);
@@ -24,6 +24,12 @@ describe("catálogo estático", () => {
     expect(searchBooks({ page: 2 }).books[0].id).not.toBe(searchBooks({ page: 1 }).books[0].id);
     expect(searchBooks({ page: Infinity }).page).toBe(1);
     expect(searchBooks({ q: "inexistente-xyz" }).total).toBe(0);
+  });
+  it("mantém uma seleção editorial estável e com capas verificadas", () => {
+    const selected = featuredBooks();
+    expect(selected.map((book) => book.isbn)).toEqual([...FEATURED_ISBNS]);
+    expect(selected).toHaveLength(6);
+    expect(selected.every((book) => coverForIsbn(book.isbn))).toBe(true);
   });
 });
 
@@ -51,8 +57,8 @@ describe("carrinho e WhatsApp sem servidor", () => {
     expect(message).toContain("2x 30 dias, 30 vidas, 1 céu");
     expect(message).toContain("R$\u00a062,00/un. = R$\u00a0124,00");
     expect(message).toContain("*Total: R$\u00a0183,90*");
-    expect(message).toContain("Nome: Maria");
-    expect(message).toContain("Observação: Retiro sábado");
+    expect(message).toContain("*Nome:* Maria");
+    expect(message).toContain("*Observação:* Retiro sábado");
     expect(message).not.toContain("LC-");
     expect(new URL(whatsappUrl(message)).searchParams.get("text")).toBe(message);
   });

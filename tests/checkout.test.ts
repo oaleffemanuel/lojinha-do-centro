@@ -81,7 +81,7 @@ describe("mensagem do WhatsApp", () => {
     expect(text).toContain(`1. Caminho — ${brl("49,90")}`);
     expect(text).toContain(`2. 2x Sulco — ${brl("62,00")}/un. = ${brl("124,00")}`);
     expect(text).toContain(`*Total: ${brl("173,90")}*`);
-    expect(text).toContain("Nome: Maria Silva");
+    expect(text).toContain("*Nome:* Maria Silva");
     expect(text).toContain("receber os dados para pagamento por PIX");
     expect(text).not.toContain("📚");
   });
@@ -89,8 +89,13 @@ describe("mensagem do WhatsApp", () => {
   it("inclui a observação só quando existe", () => {
     expect(orderMessage(order)).not.toContain("Observação");
     expect(orderMessage({ ...order, notes: "Retiro sábado" })).toContain(
-      "Observação: Retiro sábado",
+      "*Observação:* Retiro sábado",
     );
+  });
+  it("separa a saudação em linhas limpas", () => {
+    const text = orderMessage(order);
+    expect(text.startsWith("Olá! Gostaria de fazer uma encomenda\nna Lojinha do Centro!\n\n*Meu pedido:*")).toBe(true);
+    expect(text).not.toContain("  ");
   });
 
   it("o link vai para o número configurado e sobrevive a acento e quebra de linha", () => {
