@@ -1,0 +1,19 @@
+{
+  "source": "Planilha Padrão de Pedidos - Atualizada 29.xlsx",
+  "source_sha256": "6f158b5977d522c5fd407400cb4c9df9fd10ef8c21dd6180ebe21f883f51ee4f",
+  "collected_on": "2026-10-14",
+  "publisher": "Quadrante Editora",
+  "price_field": "Preço Capa",
+  "price_note": "Public cover price from the workbook; reseller discounts are not imported.",
+  "availability_default": "order",
+  "source_stats": {
+    "rows_considered": 562,
+    "unique_rows": 560,
+    "duplicate_rows_collapsed": 2,
+    "duplicate_isbns": 2,
+    "rows_missing_required_data": 0
+  },
+  "added": 0,
+  "skipped_existing_isbns": 560,
+  "isbn_policy": "ISBN is the identity; existing catalog records are preserved."
+}

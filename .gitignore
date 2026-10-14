@@ -1,0 +1,10 @@
+# Artefatos de build e dependências: reproduzíveis a partir do código.
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+
+# Segredos. O .env.example é versionado (ver .gitignore da raiz).
+.env
+.env.local
+.env.*.local
