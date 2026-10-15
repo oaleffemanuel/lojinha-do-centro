@@ -11,8 +11,6 @@ export function BookCover({ title, author, url, compact = false }: { title: stri
         <img
           src={url}
           alt={`Capa de ${title}`}
-          width={360}
-          height={480}
           loading="lazy"
           decoding="async"
           referrerPolicy="no-referrer"

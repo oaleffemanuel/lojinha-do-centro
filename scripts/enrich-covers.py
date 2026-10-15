@@ -59,19 +59,53 @@ class Page(HTMLParser):
             self.text.append(data)
 
 
+def primary_product(document):
+    products = []
+    for payload in re.findall(r'<script[^>]*type=["\']application/ld\+json["\'][^>]*>(.*?)</script>', document, re.I | re.S):
+        try:
+            value = json.loads(payload)
+        except json.JSONDecodeError:
+            continue
+        values = value if isinstance(value, list) else [value]
+        for item in values:
+            if not isinstance(item, dict):
+                continue
+            main_entity = item.get('mainEntity')
+            if isinstance(main_entity, dict) and main_entity.get('@type') == 'Product':
+                products.append(main_entity)
+            elif item.get('@type') == 'Product':
+                products.append(item)
+    return products[0] if products else {}
+
+
 def extract_product(document):
     page = Page()
     page.feed(document)
-    matches = re.findall(r'ISBN(?:\s*-?\s*1[03])?\s*[:：]?\s*([0-9][0-9Xx\s.\-]{8,24})', ' '.join(page.text), re.I)
+    product = primary_product(document)
+    metadata = ' '.join([page.meta.get('description', ''), page.meta.get('og:description', ''), ' '.join(page.text)])
+    matches = re.findall(r'ISBN(?:\s*-?\s*1[03])?\s*[:：]?\s*([0-9][0-9Xx\s.\-]{8,24})', metadata, re.I)
     identifiers = {normalize_isbn(value.strip()) for value in matches}
     if None in identifiers:
         identifiers = set()
-    image = page.meta.get('og:image:secure_url') or page.meta.get('og:image', '')
+    sku = normalize_isbn(product.get('sku'))
+    if sku:
+        identifiers.add(sku)
+    image = product.get('image', '') or page.meta.get('og:image:secure_url') or page.meta.get('og:image', '')
+    if isinstance(image, list):
+        image = image[0] if image else ''
     image = image.replace('http://', 'https://', 1)
     parsed = urllib.parse.urlparse(image)
     if parsed.scheme != 'https' or not parsed.hostname or not parsed.hostname.endswith('.mitiendanube.com'):
         image = ''
     return identifiers, image, page.meta.get('og:title', '')
+
+
+def valid_image(content, headers):
+    content_type = headers.get('Content-Type', '').split(';', 1)[0].lower()
+    return len(content) > 100 and content_type.startswith('image/') and (
+        content.startswith((b'\x89PNG\r\n\x1a\n', b'\xff\xd8')) or
+        content.startswith(b'RIFF') and content[8:12] == b'WEBP'
+    )
 
 
 def words(value):
@@ -199,8 +233,8 @@ def main():
                 reason = 'Missing, ambiguous, invalid or non-catalog ISBN; no title-only matches accepted'
                 if len(identifiers) == 1 and len(matching) == 1 and image:
                     identifier = next(iter(matching))
-                    _, headers = request(image, 'HEAD')
-                    if headers.get('Content-Type', '').startswith('image/'):
+                    content, headers = request(image)
+                    if valid_image(content, headers):
                         manifest['covers'][identifier] = {'url': image, 'source_url': url, 'source': 'Cultor de Livros', 'matched_isbn': identifier, 'source_title': title, 'checked_at': datetime.datetime.now(datetime.timezone.utc).isoformat(), 'match_method': 'exact validated ISBN from product page', 'storage': 'external publisher CDN URL; no image downloaded'}
                         status, reason = 'matched', identifier
                 manifest['pages'][url] = {'status': status, 'reason': reason}

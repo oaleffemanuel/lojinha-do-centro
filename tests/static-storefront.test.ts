@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+
 import { describe, expect, it } from "vitest";
 import { books, FEATURED_ISBNS, facets, featuredBooks, searchBooks } from "@/lib/catalog";
 import { CART_KEY, normalizeLines, parseRecovery, resolveCart } from "@/lib/cart";
@@ -9,7 +11,9 @@ describe("catálogo estático", () => {
     expect(books).toHaveLength(1118);
     expect(new Set(books.map((book) => book.isbn)).size).toBe(1118);
     expect(books.every((book) => Number.isInteger(book.price_cents) && book.price_cents > 0)).toBe(true);
-    expect(books.filter((book) => coverForIsbn(book.isbn))).toHaveLength(777);
+    expect(books.filter((book) => coverForIsbn(book.isbn))).toHaveLength(1086);
+    expect(books.filter((book) => book.publisher === "Cultor de Livros" && coverForIsbn(book.isbn))).toHaveLength(529);
+    expect(books.filter((book) => book.publisher === "Quadrante Editora" && coverForIsbn(book.isbn))).toHaveLength(557);
   });
   it("busca ISBN formatado, autor e título sem acentos", () => {
     expect(searchBooks({ q: "978-85-5638-489-8" }).total).toBe(1);
@@ -30,6 +34,15 @@ describe("catálogo estático", () => {
     expect(selected.map((book) => book.isbn)).toEqual([...FEATURED_ISBNS]);
     expect(selected).toHaveLength(6);
     expect(selected.every((book) => coverForIsbn(book.isbn))).toBe(true);
+  });
+  it("mantém a jornada da homepage e links de categoria coerentes", () => {
+    const source = readFileSync(new URL("../app/page.tsx", import.meta.url), "utf8");
+    const sections = ["hero-panel", "como-funciona", "nossa-selecao", "assuntos"].map((marker) => source.indexOf(marker));
+    expect(sections.every((position) => position >= 0)).toBe(true);
+    expect(sections).toEqual([...sections].sort((first, second) => first - second));
+    expect(source).toContain("className=\"category-link\"");
+    expect(source).toContain("<span aria-hidden>↗</span>");
+    expect(source).toContain("Conheça a Lojinha ↓");
   });
 });
 
@@ -65,5 +78,19 @@ describe("carrinho e WhatsApp sem servidor", () => {
   it("permite nome vazio e recusa destino inválido", () => {
     expect(orderMessage({ customerName: "", items: [], totalCents: 0 })).not.toContain("Nome:");
     expect(() => whatsappUrl("teste", "inválido")).toThrow();
+  });
+  it("mantém títulos longos, dez itens e quantidades na mensagem codificada", () => {
+    const items = Array.from({ length: 10 }, (_, index) => ({
+      title: `Livro com acentuação ${index + 1} — edição especial`,
+      quantity: index === 3 ? 2 : 1,
+      unitPriceCents: 1000 + index,
+      lineTotalCents: index === 3 ? 2006 : 1000 + index,
+    }));
+    const message = orderMessage({ customerName: "João da Silva", notes: "Retirada no sábado", items, totalCents: 11051 });
+    expect(message.match(/^\d+\. /gm)).toHaveLength(10);
+    expect(message).toContain("4. 2x Livro com acentuação 4");
+    expect(message).toContain("*Nome:* João da Silva");
+    expect(message).toContain("*Observação:* Retirada no sábado");
+    expect(new URL(whatsappUrl(message)).searchParams.get("text")).toBe(message);
   });
 });
