@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Ícone monocromático da Lojinha do Centro">
+  <path fill="currentColor" d="M22 22a6 6 0 0 1 6-6h50a6 6 0 0 1 6 6v56a6 6 0 0 1-6 6H28a6 6 0 0 1-6-6V22Z"/>
+  <path fill="currentColor" d="M22 22a6 6 0 0 1 6-6h10v68H28a6 6 0 0 1-6-6V22Z" opacity=".72"/>
+  <path fill="white" d="M45 29h23v4H45zm0 11h18v3H45zm0 30h23v3H45z" opacity=".9"/>
+</svg>
