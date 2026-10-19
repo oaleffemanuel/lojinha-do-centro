@@ -9,28 +9,21 @@ export interface MessageItem {
 }
 
 export function orderMessage(input: {
-  code?: string;
-  customerName: string;
   items: readonly MessageItem[];
   totalCents: number;
-  notes?: string | null;
 }): string {
   const lines = [
     `Olá! Gostaria de fazer uma encomenda`,
-    `na ${STORE_NAME}!`,
+    `pela ${STORE_NAME}.`,
     "",
-    "*Meu pedido:*",
+    "📚 *Meu pedido:*",
     ...input.items.map((item, index) => item.quantity === 1
       ? `${index + 1}. ${item.title} — ${formatBRL(item.unitPriceCents)}`
-      : `${index + 1}. ${item.quantity}x ${item.title} — ${formatBRL(item.unitPriceCents)}/un. = ${formatBRL(item.lineTotalCents)}`),
+      : `${index + 1}. ${item.title} — ${item.quantity} un. × ${formatBRL(item.unitPriceCents)} = ${formatBRL(item.lineTotalCents)}`),
     "",
     `*Total: ${formatBRL(input.totalCents)}*`,
   ];
-  if (input.customerName.trim()) lines.push("", `*Nome:* ${input.customerName.trim()}`);
-  if (input.notes?.trim()) {
-    lines.push("", `*Observação:* ${input.notes.trim()}`);
-  }
-  lines.push("", "Gostaria de confirmar a disponibilidade e receber os dados para pagamento por PIX.", "Obrigado!");
+  lines.push("", "Aguardo a confirmação de disponibilidade e as orientações para pagamento e retirada.", "Obrigado!");
   return lines.join("\n");
 }
 

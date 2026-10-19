@@ -10,13 +10,11 @@ import { orderMessage, whatsappUrl } from "@/lib/whatsapp";
 
 function linkFor(recovery: Recovery) {
   const items = resolveCart(recovery.lines);
-  return whatsappUrl(orderMessage({ customerName: recovery.name, notes: recovery.notes, items, totalCents: sumCents(items.map((item) => item.lineTotalCents)) }));
+  return whatsappUrl(orderMessage({ items, totalCents: sumCents(items.map((item) => item.lineTotalCents)) }));
 }
 
 export function CartView() {
   const { lines, ready, setQuantity, remove, clear, restore } = useCart();
-  const [name, setName] = useState("");
-  const [notes, setNotes] = useState("");
   const [recovery, setRecovery] = useState<Recovery | null>(null);
   const [error, setError] = useState("");
   const [recoverable, setRecoverable] = useState(false);
@@ -40,7 +38,7 @@ export function CartView() {
   function handoff(event: React.FormEvent) {
     event.preventDefault();
     if (!rows.length) return;
-    const saved = { lines: [...lines], name: name.trim(), notes: notes.trim() };
+    const saved = { lines: [...lines] };
     try {
       const url = linkFor(saved);
       setRecovery(saved);
@@ -75,8 +73,6 @@ export function CartView() {
           <a href={linkFor(recovery)} target="_blank" rel="noopener noreferrer" onClick={() => { if (recoverable && JSON.stringify(lines) === JSON.stringify(recovery.lines)) clear(); }} className="inline-flex min-h-11 items-center rounded-lg bg-ochre px-4 py-3 font-semibold text-paper">Abrir mensagem no WhatsApp</a>
           <button type="button" onClick={() => {
             restore(recovery.lines);
-            setName(recovery.name);
-            setNotes(recovery.notes);
             forgetRecovery();
             setError("");
           }} className="min-h-11 rounded-lg border border-line px-4">Restaurar carrinho</button>
@@ -113,14 +109,8 @@ export function CartView() {
         </ul>
         <div className="mt-4 flex items-center justify-between rounded-xl bg-paper-2 p-4"><span>Total</span><strong className="text-xl">{formatBRL(total)}</strong></div>
         <form onSubmit={handoff} className="mt-8 space-y-4">
-          <label className="block text-sm font-medium" htmlFor="nome">Nome <span className="font-normal text-graphite">(opcional)</span>
-            <input id="nome" name="name" autoComplete="name" maxLength={120} value={name} onChange={(event) => setName(event.target.value)} className="mt-1 w-full rounded-lg border border-line bg-white px-3 py-3 text-base" />
-          </label>
-          <label className="block text-sm font-medium" htmlFor="obs">Observação <span className="font-normal text-graphite">(opcional)</span>
-            <textarea id="obs" name="notes" maxLength={2000} rows={3} value={notes} onChange={(event) => setNotes(event.target.value)} className="mt-1 w-full rounded-lg border border-line bg-white px-3 py-3 text-base" />
-          </label>
           <button type="submit" className="min-h-12 w-full rounded-lg bg-ochre px-4 py-3 font-semibold text-paper">Finalizar pelo WhatsApp</button>
-          <p className="text-center text-sm text-graphite">Você revisa e envia a mensagem no WhatsApp. Pagamento por PIX combinado com a loja.</p>
+          <p className="text-center text-sm text-graphite">Você revisa e envia a mensagem no WhatsApp. Pagamento e retirada são combinados com a loja.</p>
         </form>
       </>}
     </>

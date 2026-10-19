@@ -66,8 +66,6 @@ describe("telefone", () => {
 
 describe("mensagem do WhatsApp", () => {
   const order = {
-    code: "LC-000123",
-    customerName: "Maria Silva",
     items: [
       { title: "Caminho", quantity: 1, unitPriceCents: 4990, lineTotalCents: 4990 },
       { title: "Sulco", quantity: 2, unitPriceCents: 6200, lineTotalCents: 12400 },
@@ -77,24 +75,23 @@ describe("mensagem do WhatsApp", () => {
 
   it("formata unidades, itens e total em português claro", () => {
     const text = orderMessage(order);
-    expect(text).toContain("*Meu pedido:*");
+    expect(text).toContain("📚 *Meu pedido:*");
     expect(text).toContain(`1. Caminho — ${brl("49,90")}`);
-    expect(text).toContain(`2. 2x Sulco — ${brl("62,00")}/un. = ${brl("124,00")}`);
+    expect(text).toContain(`2. Sulco — 2 un. × ${brl("62,00")} = ${brl("124,00")}`);
     expect(text).toContain(`*Total: ${brl("173,90")}*`);
-    expect(text).toContain("*Nome:* Maria Silva");
-    expect(text).toContain("receber os dados para pagamento por PIX");
-    expect(text).not.toContain("📚");
+    expect(text).toContain("Aguardo a confirmação de disponibilidade");
+    expect(text).not.toContain("Nome:");
+    expect(text).not.toContain("Observação:");
   });
 
-  it("inclui a observação só quando existe", () => {
-    expect(orderMessage(order)).not.toContain("Observação");
-    expect(orderMessage({ ...order, notes: "Retiro sábado" })).toContain(
-      "*Observação:* Retiro sábado",
-    );
+  it("não inclui dados pessoais ou observações", () => {
+    const text = orderMessage(order);
+    expect(text).not.toContain("Maria Silva");
+    expect(text).not.toContain("Retiro sábado");
   });
   it("separa a saudação em linhas limpas", () => {
     const text = orderMessage(order);
-    expect(text.startsWith("Olá! Gostaria de fazer uma encomenda\nna Lojinha do Centro!\n\n*Meu pedido:*")).toBe(true);
+    expect(text.startsWith("Olá! Gostaria de fazer uma encomenda\npela Lojinha do Centro.\n\n📚 *Meu pedido:*")).toBe(true);
     expect(text).not.toContain("  ");
   });
 

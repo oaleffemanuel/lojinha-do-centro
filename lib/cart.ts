@@ -3,7 +3,7 @@ import { books } from "@/lib/catalog";
 export const CART_KEY = "lojinha.carrinho.static.v1";
 export const RECOVERY_KEY = "lojinha.whatsapp.recovery.v1";
 export interface CartLine { bookId: number; quantity: number }
-export interface Recovery { lines: CartLine[]; name: string; notes: string }
+export interface Recovery { lines: CartLine[] }
 
 export function normalizeLines(value: unknown): CartLine[] {
   if (!Array.isArray(value)) return [];
@@ -27,8 +27,8 @@ export function resolveCart(lines: CartLine[]) {
 export function parseRecovery(value: string | null): Recovery | null {
   try {
     const parsed = JSON.parse(value ?? "null");
-    if (!parsed || typeof parsed.name !== "string" || typeof parsed.notes !== "string") return null;
+    if (!parsed || typeof parsed !== "object") return null;
     const lines = normalizeLines(parsed.lines);
-    return lines.length ? { lines, name: parsed.name.slice(0, 120), notes: parsed.notes.slice(0, 2000) } : null;
+    return lines.length ? { lines } : null;
   } catch { return null; }
 }

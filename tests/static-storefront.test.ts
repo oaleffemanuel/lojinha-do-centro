@@ -59,24 +59,25 @@ describe("carrinho e WhatsApp sem servidor", () => {
     expect(rows[0].lineTotalCents).toBe(12400);
   });
   it("restaura cópia válida e recusa armazenamento corrompido", () => {
-    const saved = { lines: [{ bookId, quantity: 2 }], name: "Maria", notes: "Retiro sábado" };
+    const saved = { lines: [{ bookId, quantity: 2 }] };
     expect(parseRecovery(JSON.stringify(saved))).toEqual(saved);
+    expect(parseRecovery(JSON.stringify({ ...saved, name: "Maria", notes: "Retiro sábado" }))).toEqual(saved);
     expect(parseRecovery("{inválido")).toBeNull();
     expect(parseRecovery(null)).toBeNull();
   });
-  it("inclui lista, preços, nome e observação sem inventar código LC", () => {
+  it("inclui lista, preços e total sem dados pessoais ou código LC", () => {
     const items = resolveCart([{ bookId, quantity: 2 }, { bookId: Number("9788556385192"), quantity: 1 }]);
-    const message = orderMessage({ customerName: "Maria", notes: "Retiro sábado", items, totalCents: 18390 });
-    expect(message).toContain("2x 30 dias, 30 vidas, 1 céu");
-    expect(message).toContain("R$\u00a062,00/un. = R$\u00a0124,00");
+    const message = orderMessage({ items, totalCents: 18390 });
+    expect(message).toContain("1. 30 dias, 30 vidas, 1 céu — 2 un.");
+    expect(message).toContain("2 un. × R$\u00a062,00 = R$\u00a0124,00");
     expect(message).toContain("*Total: R$\u00a0183,90*");
-    expect(message).toContain("*Nome:* Maria");
-    expect(message).toContain("*Observação:* Retiro sábado");
+    expect(message).not.toContain("Nome:");
+    expect(message).not.toContain("Observação:");
     expect(message).not.toContain("LC-");
     expect(new URL(whatsappUrl(message)).searchParams.get("text")).toBe(message);
   });
-  it("permite nome vazio e recusa destino inválido", () => {
-    expect(orderMessage({ customerName: "", items: [], totalCents: 0 })).not.toContain("Nome:");
+  it("recusa destino inválido", () => {
+    expect(orderMessage({ items: [], totalCents: 0 })).not.toContain("Nome:");
     expect(() => whatsappUrl("teste", "inválido")).toThrow();
   });
   it("mantém títulos longos, dez itens e quantidades na mensagem codificada", () => {
@@ -86,11 +87,11 @@ describe("carrinho e WhatsApp sem servidor", () => {
       unitPriceCents: 1000 + index,
       lineTotalCents: index === 3 ? 2006 : 1000 + index,
     }));
-    const message = orderMessage({ customerName: "João da Silva", notes: "Retirada no sábado", items, totalCents: 11051 });
+    const message = orderMessage({ items, totalCents: 11051 });
     expect(message.match(/^\d+\. /gm)).toHaveLength(10);
-    expect(message).toContain("4. 2x Livro com acentuação 4");
-    expect(message).toContain("*Nome:* João da Silva");
-    expect(message).toContain("*Observação:* Retirada no sábado");
+    expect(message).toContain("4. Livro com acentuação 4 — edição especial — 2 un.");
+    expect(message).not.toContain("João da Silva");
+    expect(message).not.toContain("Retirada no sábado");
     expect(new URL(whatsappUrl(message)).searchParams.get("text")).toBe(message);
   });
 });
